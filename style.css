@@ -441,6 +441,7 @@ footer {
 }
 
 .modal-content button:hover {
+  
   background-color: #345ec4;
 }
 
@@ -448,7 +449,7 @@ footer {
   color: #3a77ff;
   text-decoration: none;
 }
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 1024px) {
  .nav{
   display: flex;
   flex-direction: column;
