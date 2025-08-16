@@ -1,112 +1,129 @@
- document.getElementById("registerModal").style.display = "none";
-document.getElementById("loginModal").style.display = "none";
-
-loginbtn = document.getElementById("loginBtn")
-
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "./auth.js";
+import { auth } from "./config.js";
+import {db} from './config.js'
+import {collection , addDoc ,setDoc, doc} from './firestore-db.js'   
+const registerModal = document.getElementById("registerModal")
+const loginModal = document.getElementById("loginModal")
+const loginLink = document.getElementById("loginLink")
+const registerLink = document.getElementById("registerLink");
+const loginBtn = document.getElementById("loginBtn");
+const registerForm = document.getElementById("registerForm");
+const loginForm = document.getElementById("loginForm");
+const profileIcon = document.getElementById("profileIcon");
+const profileDropdown = document.getElementById("profileDropdown");
+const userEmailDisplay = document.getElementById("userEmailDisplay");
+const logoutBtn = document.getElementById("logoutBtn");
+const sellButton = document.getElementById("sell-button");
+sellButton.disable= true
 function openLogin() {
-    document.getElementById("loginModal").style.display = "block";
+    loginModal.style.display = "block";
 }
 function closeLogin() {
-    document.getElementById("loginModal").style.display = "none";
+    loginModal.style.display = "none";
 }
 function openRegister() {
-    document.getElementById("loginModal").style.display = "none";
-    document.getElementById("registerModal").style.display = "block";
+    loginModal.style.display = "none";
+    registerModal.style.display = "block";
 }
 function closeRegister() {
-    document.getElementById("registerModal").style.display = "none";
+    registerModal.style.display = "none";
 }
+loginBtn.addEventListener("click", openLogin);
+loginLink.addEventListener("click", openLogin);
+registerLink.addEventListener("click", openRegister);
 
-window.onclick = function (event) {
-    if (event.target === document.getElementById("loginModal")) {
+// Close modal on outside click
+window.addEventListener("click", function (event) {
+    if (event.target === loginModal) {
         closeLogin();
     }
-    if (event.target === document.getElementById("registerModal")) {
+    if (event.target === registerModal) {
         closeRegister();
     }
-};
+});
 
-
-class Person {
-    fullName
-    email
-    password
-    constructor(fullName, email, password) {
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password
-    }
-}
-
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-
+// Register with Firebase
 function RegisterForm(event) {
+    console.log("hello")
     event.preventDefault();
-    let fullName = document.getElementById("new-username").value
-    let email = document.getElementById("new-email").value
-    let password = document.getElementById("new-password").value
-   let exists = users.find((element) => element.email === email);
-  if (exists) {
-    alert("User already exists");
-    return;
-  }
-    let newUser = new Person(fullName, email, password);
-  users.push(newUser);
-  localStorage.setItem("users", JSON.stringify(users));
-  alert("Registration successful!");
-   fullName.value = ""
-    email.value = ""
-    password.value = ""
-  closeRegister();
-  loginbtn.innerHTML= savedUser.email
-
-
+    let email = document.getElementById("new-email").value;
+    let password = document.getElementById("new-password").value;
+let username = document.getElementById("new-username").value;
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        const user = userCredential.user;
+        // CORRECTED CALL: Pass user.email, then username, then user.uid
+        adduserTodb(user.email, username, user.uid); // <--- HERE!
+        console.log("User registered:", user);
+        alert("Registration successful!");
+        closeRegister();
+    })
+        .catch((error) => {
+            alert(error.message);
+        });
+}
+async function adduserTodb(email, userName, userId) { 
+    const userDocRef = doc(db, "users", userId); 
+    await setDoc(userDocRef, {
+        email,
+        userName,
+        uid: userId,
+        image: 'https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg'
+    });
+    console.log("User profile added to Firestore with ID: ", userId);
 }
 function LoginForm(event) {
-  event.preventDefault();
-  let email = document.getElementById("email").value
-  let password = document.getElementById("password").value
+    event.preventDefault();
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
-  let usersFromStorage = JSON.parse(localStorage.getItem("users")) || [];
-  let savedUser = usersFromStorage.find((element) => element.email === email);
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            alert("Login successful! " + userCredential.user.email);
+            closeLogin();
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
+        if(userCredential.user.email){
+          sellButton.disabled = false;
+          sellButton.addEventListener("click", () => {
+            console.log("clik")
+            window.location.href = "./ads/ads.html";
+          });
+        }
+}
 
-  if (savedUser && savedUser.password === password) {
-    alert("Login successful!");
-    localStorage.setItem("loggedinUser", JSON.stringify(savedUser));
-    closeLogin();
+registerForm.addEventListener("submit", RegisterForm);
+loginForm.addEventListener("submit", LoginForm);
+profileIcon.addEventListener("click", () => {
+  profileDropdown.style.display = profileDropdown.style.display === "none" ? "block" : "none";
+});
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is logged in
+    loginBtn.style.display = "none";
+    profileIcon.style.display = "flex"; 
+    userEmailDisplay.textContent = user.email;
+    document.getElementById("profileContainer").style.display = "none";
   } else {
-    alert("Invalid email or password");
+    // User is logged out
+    loginBtn.style.display = "block";
+    profileIcon.style.display = "none";
+    document.getElementById("profileContainer").style.display = "none";
   }
-  loginbtn.innerHTML= savedUser.fullName
-}
+});
+logoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => {
+    // Logged out successfully
+    console.log("User logged out");
+    alert("Logout successful!");
+    profileDropdown.style.display = "none";
+  }).catch((error) => {
+    console.error("Logout failed: ", error);
+    alert(error.message);
+  });
+});
 
-async function getProducts() {
-    let response = await fetch('https://dummyjson.com/products')
-    let data = await response.json()
-    console.log(data.products);
-
-
-    let { products } = data;
-    let cards = document.getElementById('cards');
-    products.map(products => {
-        let { title, price, images, id, description } = products;
-        cards.innerHTML += `
-          <div class="product-card">
-            <div class="product-card__image">
-                <img src="${images[0]}" alt="${title}">
-            </div>
-            <div class="product-card__info">
-                <h2 class="product-card__title"><a href="./product-detail/index.html?id=${id}" target="_blank">${title}</a></h2>
-                <p class="product-card__description"></p>
-                <div class="product-card__price-row">
-                    <span class="product-card__price">${price}</span>
-                    <button class="product-card__btn">Add to Cart</button>
-                </div>
-            </div>
-        </div>`
-    ;
-
-    });
-}
-getProducts();
