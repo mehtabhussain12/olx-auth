@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "./auth.js";
 import { auth } from "./config.js";
 import {db} from './config.js'
-import {collection , addDoc ,setDoc, doc} from './firestore-db.js'   
+import {collection , addDoc ,setDoc, doc,  getDocs} from './firestore-db.js'   
 const registerModal = document.getElementById("registerModal")
 const loginModal = document.getElementById("loginModal")
 const loginLink = document.getElementById("loginLink")
@@ -14,8 +14,11 @@ const profileDropdown = document.getElementById("profileDropdown");
 const userEmailDisplay = document.getElementById("userEmailDisplay");
 const logoutBtn = document.getElementById("logoutBtn");
 const sellButton = document.getElementById("sell-button");
-sellButton.disable= true
+const adsContainer = document.getElementById("cards");
+const myAdsBtn = document.getElementById("myAdsBtn");
+// sellButton.disable= true
 function openLogin() {
+  registerModal.style.display = "none";
     loginModal.style.display = "block";
 }
 function closeLogin() {
@@ -31,8 +34,6 @@ function closeRegister() {
 loginBtn.addEventListener("click", openLogin);
 loginLink.addEventListener("click", openLogin);
 registerLink.addEventListener("click", openRegister);
-
-// Close modal on outside click
 window.addEventListener("click", function (event) {
     if (event.target === loginModal) {
         closeLogin();
@@ -52,8 +53,8 @@ let username = document.getElementById("new-username").value;
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
         const user = userCredential.user;
-        // CORRECTED CALL: Pass user.email, then username, then user.uid
-        adduserTodb(user.email, username, user.uid); // <--- HERE!
+        
+        adduserTodb(user.email, username, user.uid);
         console.log("User registered:", user);
         alert("Registration successful!");
         closeRegister();
@@ -81,18 +82,20 @@ function LoginForm(event) {
         .then((userCredential) => {
             alert("Login successful! " + userCredential.user.email);
             closeLogin();
+            if (userCredential.user.email) {
+                sellButton.disabled = false;
+                sellButton.addEventListener("click", () => {
+                    console.log("clik");
+                    window.location.href = "../ads/ads.html";
+                });
+            }
         })
         .catch((error) => {
             alert(error.message);
         });
-        if(userCredential.user.email){
-          sellButton.disabled = false;
-          sellButton.addEventListener("click", () => {
-            console.log("clik")
-            window.location.href = "./ads/ads.html";
-          });
-        }
+       
 }
+
 
 registerForm.addEventListener("submit", RegisterForm);
 loginForm.addEventListener("submit", LoginForm);
@@ -103,21 +106,26 @@ profileIcon.addEventListener("click", () => {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is logged in
     loginBtn.style.display = "none";
     profileIcon.style.display = "flex"; 
     userEmailDisplay.textContent = user.email;
     document.getElementById("profileContainer").style.display = "none";
+
+    sellButton.disabled = false;
+    sellButton.addEventListener("click", () => {
+      console.log("Sell button click");
+      window.location.href = "./ads/ads.html";
+    });
+
   } else {
-    // User is logged out
     loginBtn.style.display = "block";
     profileIcon.style.display = "none";
     document.getElementById("profileContainer").style.display = "none";
+    sellButton.disabled = true;
   }
 });
 logoutBtn.addEventListener("click", () => {
   signOut(auth).then(() => {
-    // Logged out successfully
     console.log("User logged out");
     alert("Logout successful!");
     profileDropdown.style.display = "none";
@@ -126,4 +134,46 @@ logoutBtn.addEventListener("click", () => {
     alert(error.message);
   });
 });
+async function fetchAllAds() {
+    try {
+     
+    
+        const querySnapshot = await getDocs(collection(db, "ads"));
 
+        adsContainer.innerHTML = "";
+
+        querySnapshot.forEach((doc) => {
+            const ad = doc.data();
+            const adCard = `
+                <div class="product-card">
+                <div class = "product-card__info">
+                <div class="product-card__image">
+                <img src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp" alt="Essence Mascara Lash Princess">
+            </div>
+                    <h3 class = "product-card__title">${ad.title}</h3>
+                    <p><strong>Category:</strong> ${ad.category}</p>
+                       <p class= "product-card__description">${ad.description}</p>
+                    <div class="product-card__price-row">
+                    <span class="product-card__price">${ad.price}</span>
+                    <button class="product-card__btn">Add to Cart</button>
+                </div>
+                 
+                  
+                </div>
+                <div class="product-card__seller-info">
+                    <p><strong>Seller Name:</strong> ${ad.sellerName}</p>
+                    <p><strong>Phone:</strong> ${ad.sellerPhone}</p>
+                    <p><strong>City:</strong> ${ad.sellerCity}</p>
+                </div>
+            `;
+
+            adsContainer.innerHTML += adCard;
+        });
+
+    } catch (error) {
+        console.error("Error fetching ads:", error);
+    }
+}
+
+
+fetchAllAds()

@@ -396,7 +396,7 @@ footer {
   cursor: pointer;
 }
 .modal {
-  /* display: none; */
+  display: none;
   position: fixed;
   z-index: 999;
   left: 0;
@@ -495,6 +495,14 @@ footer {
   border: none;
   border-radius: 3px;
   cursor: pointer;
+}
+.product-card__seller-info{
+ margin-left: 8px;
+ margin-bottom: 8px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #555;
+
 }
 @media screen and (max-width: 1024px) {
  .nav{
