@@ -16,6 +16,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const sellButton = document.getElementById("sell-button");
 const adsContainer = document.getElementById("cards");
 const myAdsBtn = document.getElementById("myAdsBtn");
+const profileContainer = document.getElementById("profileContainer");
 // sellButton.disable= true
 function openLogin() {
   registerModal.style.display = "none";
@@ -106,11 +107,16 @@ profileIcon.addEventListener("click", () => {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    profileContainer.innerHTML = `
+        <h1>Welcome to your profile!</h1>
+        
+  <p id="userEmail">${user.email}</p>
+  <button id="myAdsBtn">My ads</button>
+  <button id="logoutBtn">Logout</button>`
     loginBtn.style.display = "none";
     profileIcon.style.display = "flex"; 
     userEmailDisplay.textContent = user.email;
     document.getElementById("profileContainer").style.display = "none";
-
     sellButton.disabled = false;
     sellButton.addEventListener("click", () => {
       console.log("Sell button click");
@@ -144,13 +150,14 @@ async function fetchAllAds() {
 
         querySnapshot.forEach((doc) => {
             const ad = doc.data();
+            const adId = doc.id;
             const adCard = `
                 <div class="product-card">
                 <div class = "product-card__info">
                 <div class="product-card__image">
                 <img src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp" alt="Essence Mascara Lash Princess">
             </div>
-                    <h3 class = "product-card__title">${ad.title}</h3>
+                  <h3><a href="./product/index.html?id=${doc.id}">${ad.title}</a></h3>
                     <p><strong>Category:</strong> ${ad.category}</p>
                        <p class= "product-card__description">${ad.description}</p>
                     <div class="product-card__price-row">

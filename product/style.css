@@ -1,0 +1,356 @@
+  body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f8f9;
+            padding: 1rem; /* p-4 */
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 2rem; /* md:p-8 */
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            body {
+                padding: 3rem; /* lg:p-12 */
+            }
+        }
+
+        .main-container {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem; /* space-y-8 */
+            max-width: 80rem; /* max-w-7xl */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (min-width: 1024px) {
+            .main-container {
+                flex-direction: row; /* lg:flex-row */
+                gap: 2rem; /* lg:space-x-8 */
+                row-gap: 0;
+            }
+        }
+
+        .left-column {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-badge {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background-color: #ffce32;
+            color: #000;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.125rem;
+        }
+
+        .image-counter {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: rgba(17, 24, 39, 0.75);
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(17, 24, 39, 0.5);
+            color: #fff;
+            padding: 0.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            border: none;
+            transition-property: background-color;
+            transition-duration: 150ms;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(17, 24, 39, 0.75);
+        }
+
+        .nav-button:focus {
+            outline: none;
+        }
+
+        .nav-button.left {
+            left: 1rem;
+        }
+
+        .nav-button.right {
+            right: 1rem;
+        }
+
+        .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* space-y-6 */
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* space-y-4 */
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .price-row h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* space-x-2 */
+            color: #9ca3af;
+        }
+
+        .icon-container svg:hover {
+            transition-property: color;
+            transition-duration: 150ms;
+        }
+
+        .icon-container .share-icon:hover {
+            color: #6b7280;
+        }
+
+        .icon-container .heart-icon:hover {
+            color: #ef4444;
+        }
+
+        .posted-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .location {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .details-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* space-y-4 */
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .details-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* space-x-4 */
+        }
+
+        .detail-row .label {
+            width: 33.333333%;
+            color: #6b7280;
+        }
+
+        .detail-row .value {
+            width: 66.666667%;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .description-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* space-y-2 */
+        }
+
+        .description-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .description-section p {
+            color: #4b5563;
+        }
+        
+        .seller-info-section {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e5e7eb;
+        }
+
+        .seller-info-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .profile-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 9999px;
+            background-color: #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .seller-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .seller-details span:first-of-type {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .seller-details span:last-of-type {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .member-ads-section {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .member-ads-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+
+        .member-ads-item span strong {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .contact-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .contact-button {
+            width: 100%;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            font-weight: 600;
+            transition-property: background-color;
+            transition-duration: 150ms;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: 1px solid transparent;
+        }
+
+        .contact-button.primary {
+            background-color: #047857;
+            color: #fff;
+        }
+
+        .contact-button.primary:hover {
+            background-color: #065f46;
+        }
+
+        .contact-button.secondary {
+            background-color: #f9fafb;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+
+        .contact-button.secondary:hover {
+            background-color: #f3f4f6;
+        }
+
+        .ad-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .ad-meta a {
+            font-size: 0.75rem;
+            text-decoration: underline;
+        }
+
+        .ad-meta .ad-id-link {
+            color: #3b82f6;
+        }
+
+        .ad-meta .report-link {
+            color: #ef4444;
+        }
+
+        .ad-meta span {
+            color: #9ca3af;
+            margin: 0 0.5rem;
+        }
